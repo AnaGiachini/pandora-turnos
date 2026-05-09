@@ -344,6 +344,20 @@ How this project uses it:
 
 PandoraTurnos uses `req.body as Booking` as a temporary development step before adding real runtime validation.
 
+### Runtime Validation
+
+Definition:
+
+Runtime validation checks incoming data while the application is running.
+
+Why it matters:
+
+TypeScript types disappear at runtime, so backend APIs still need validation for external input coming from Postman, frontends, n8n, webhooks, or WhatsApp workflows.
+
+How this project uses it:
+
+PandoraTurnos validates the booking payload before creating a booking. It checks required string fields, allowed business types, and allowed booking statuses.
+
 ## Technical Vocabulary
 
 | Term | Meaning | Project Example |
@@ -375,6 +389,7 @@ PandoraTurnos uses `req.body as Booking` as a temporary development step before 
 | POST request | HTTP request used to create or submit data | `POST /bookings` creates a booking |
 | Request body | Data sent inside an HTTP request | Booking JSON sent from Postman |
 | Type assertion | Tells TypeScript to treat a value as a type | `req.body as Booking` |
+| Runtime validation | Checks external data while the app runs | `isValidBookingPayload(req.body)` |
 
 ## Lessons Learned
 
@@ -461,3 +476,17 @@ PandoraTurnos uses a type assertion in `createBookingController` as a temporary 
 How I would explain it in an interview:
 
 I used a TypeScript type assertion to connect the request body with the `Booking` type during early development, but I understand that production APIs need runtime validation before trusting external input.
+
+### Lesson 7: Validate External Input Before Business Logic
+
+What I learned:
+
+Any data that enters the API from outside should be validated before calling the service layer.
+
+Where I used it:
+
+PandoraTurnos validates `POST /bookings` payloads in the controller before calling `createBooking`.
+
+How I would explain it in an interview:
+
+I validate request payloads before passing data to business logic because TypeScript alone does not protect the application at runtime. This reduces invalid data, improves API reliability, and prepares the project for real integrations.
