@@ -274,6 +274,76 @@ How this project uses it:
 
 PandoraTurnos mounts the bookings router with `app.use("/bookings", bookingRouter)`, so `router.get("/")` becomes `GET /bookings`.
 
+### TypeScript Type
+
+Definition:
+
+A TypeScript type describes the shape of data during development. It helps TypeScript check that objects have the expected fields and values.
+
+Why it matters:
+
+Types improve reliability because mistakes can be detected before running the application.
+
+How this project uses it:
+
+PandoraTurnos defines a `Booking` type to describe the expected structure of booking data.
+
+### Mock Data
+
+Definition:
+
+Mock data is fake but realistic data used while building or testing a feature before connecting a real database.
+
+Why it matters:
+
+Mock data makes it possible to build and test API behavior early without waiting for persistence, authentication, or integrations.
+
+How this project uses it:
+
+PandoraTurnos uses mock bookings in the booking service to test the `/bookings` endpoint.
+
+### POST Request
+
+Definition:
+
+A POST request is an HTTP request used to create a new resource or submit data to an API.
+
+Why it matters:
+
+POST endpoints are essential for workflows where clients, forms, automation tools, or integrations need to send new data to the backend.
+
+How this project uses it:
+
+PandoraTurnos uses `POST /bookings` to create a new booking from a JSON request body.
+
+### Request Body
+
+Definition:
+
+The request body is the data sent by the client inside an HTTP request.
+
+Why it matters:
+
+APIs use request bodies to receive structured data such as booking details, customer information, and status updates.
+
+How this project uses it:
+
+PandoraTurnos reads `req.body` in the booking controller and passes that data to the booking service.
+
+### Type Assertion
+
+Definition:
+
+A type assertion tells TypeScript to treat a value as a specific type.
+
+Why it matters:
+
+It helps connect external input, such as `req.body`, with the internal TypeScript contract used by the application.
+
+How this project uses it:
+
+PandoraTurnos uses `req.body as Booking` as a temporary development step before adding real runtime validation.
+
 ## Technical Vocabulary
 
 | Term | Meaning | Project Example |
@@ -300,6 +370,11 @@ PandoraTurnos mounts the bookings router with `app.use("/bookings", bookingRoute
 | Controller | HTTP request/response logic | `listBookings` returns JSON |
 | Service | Business logic or data access | `getBookings` returns booking data |
 | Router mounting | Attaching routes under a base path | `/bookings` + `/` = `/bookings` |
+| TypeScript type | A development-time data contract | `Booking` defines booking fields |
+| Mock data | Fake realistic data for development | Two sample bookings returned by `/bookings` |
+| POST request | HTTP request used to create or submit data | `POST /bookings` creates a booking |
+| Request body | Data sent inside an HTTP request | Booking JSON sent from Postman |
+| Type assertion | Tells TypeScript to treat a value as a type | `req.body as Booking` |
 
 ## Lessons Learned
 
@@ -341,6 +416,10 @@ Where I used it:
 
 PandoraTurnos uses separate files for booking routes, booking controllers, and booking services.
 
+How I would explain it in an interview:
+
+I separate routes, controllers, and services because each layer has a different responsibility. This makes the API easier to maintain, test, and extend as more features are added.
+
 ### Lesson 4: Choose a Domain Name That Can Grow
 
 What I learned:
@@ -355,6 +434,30 @@ How I would explain it in an interview:
 
 I started with one concrete real-world case, but chose a domain name that can support multiple business types. A booking is generic enough for sports courts and dental clinics, while still being specific enough to model availability, confirmations, cancellations, and no-shows.
 
+### Lesson 5: Use Types Before Adding a Database
+
+What I learned:
+
+Before adding a database, I can define the expected data shape with TypeScript and use mock data to test API behavior.
+
+Where I used it:
+
+PandoraTurnos defines a `Booking` type and returns typed mock bookings from the booking service.
+
 How I would explain it in an interview:
 
-I separate routes, controllers, and services because each layer has a different responsibility. This makes the API easier to maintain, test, and extend as more features are added.
+I used TypeScript types and mock data first to validate the API contract before adding persistence. This helps keep the project focused and reduces complexity while the domain model is still evolving.
+
+### Lesson 6: Type Assertions Are Not Validation
+
+What I learned:
+
+Using `req.body as Booking` tells TypeScript how to treat the request body, but it does not validate that the incoming data is actually correct at runtime.
+
+Where I used it:
+
+PandoraTurnos uses a type assertion in `createBookingController` as a temporary step before adding validation.
+
+How I would explain it in an interview:
+
+I used a TypeScript type assertion to connect the request body with the `Booking` type during early development, but I understand that production APIs need runtime validation before trusting external input.

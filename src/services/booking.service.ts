@@ -1,5 +1,36 @@
-const getBookings = () => {
-  return [];
+import type { Booking } from "../models/booking.model.js";
+
+const bookings: Booking[] = [
+  {
+    id: "1",
+    businessType: "sports_court",
+    customerName: "John Doe",
+    serviceName: "Tennis Court",
+    startsAt: "2026-10-15T10:00:00Z",
+    status: "pending",
+    createdAt: "2026-10-10T10:00:00Z",
+  },
+  {
+    id: "2",
+    businessType: "dental_clinic",
+    customerName: "Jane Smith",
+    serviceName: "Dental Cleaning",
+    startsAt: "2026-10-16T14:00:00Z",
+    status: "confirmed",
+    createdAt: "2026-10-11T14:00:00Z",
+  },
+];
+
+const createBooking = (booking: Booking): Booking => {
+  bookings.push(booking);
+  return booking;
 };
 
-export { getBookings };
+const getBookings = (): Booking[] => {
+  return bookings;
+};
+
+export {
+  createBooking,
+  getBookings,
+};
