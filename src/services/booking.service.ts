@@ -30,7 +30,12 @@ const getBookings = (): Booking[] => {
   return bookings;
 };
 
+const getBookingById = (id: string): Booking | undefined => {
+  return bookings.find((booking) => booking.id === id);
+};
+
 export {
   createBooking,
   getBookings,
+  getBookingById,
 };

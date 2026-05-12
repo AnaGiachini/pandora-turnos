@@ -358,6 +358,34 @@ How this project uses it:
 
 PandoraTurnos validates the booking payload before creating a booking. It checks required string fields, allowed business types, and allowed booking statuses.
 
+### Undefined Result
+
+Definition:
+
+`undefined` means that a value was not found or was not assigned.
+
+Why it matters:
+
+Search operations such as `find()` may not find a matching record. Backend code must handle that case instead of assuming the data always exists.
+
+How this project uses it:
+
+`getBookingById` returns `Booking | undefined`, and the controller converts `undefined` into a `404 Not Found` response.
+
+### 404 Not Found
+
+Definition:
+
+`404 Not Found` is an HTTP response used when a requested resource does not exist.
+
+Why it matters:
+
+Returning a clear `404` helps API consumers, support teams, and integrators understand that the request was valid but the resource was not found.
+
+How this project uses it:
+
+PandoraTurnos returns `404` when a booking ID does not match any booking in memory.
+
 ## Technical Vocabulary
 
 | Term | Meaning | Project Example |
@@ -390,6 +418,8 @@ PandoraTurnos validates the booking payload before creating a booking. It checks
 | Request body | Data sent inside an HTTP request | Booking JSON sent from Postman |
 | Type assertion | Tells TypeScript to treat a value as a type | `req.body as Booking` |
 | Runtime validation | Checks external data while the app runs | `isValidBookingPayload(req.body)` |
+| undefined | A value that was not found or assigned | `find()` returns `undefined` |
+| 404 Not Found | Resource does not exist | `GET /bookings/999` |
 
 ## Lessons Learned
 
@@ -490,3 +520,17 @@ PandoraTurnos validates `POST /bookings` payloads in the controller before calli
 How I would explain it in an interview:
 
 I validate request payloads before passing data to business logic because TypeScript alone does not protect the application at runtime. This reduces invalid data, improves API reliability, and prepares the project for real integrations.
+
+### Lesson 8: Let Controllers Decide HTTP Responses
+
+What I learned:
+
+The service layer can return `undefined` when data is not found, while the controller decides how that maps to HTTP behavior.
+
+Where I used it:
+
+`getBookingById` returns `Booking | undefined`, and `getBookingByIdController` returns `404` when no booking exists.
+
+How I would explain it in an interview:
+
+I keep business lookup logic in the service and HTTP response decisions in the controller. This makes the API easier to test and keeps responsibilities separated.
