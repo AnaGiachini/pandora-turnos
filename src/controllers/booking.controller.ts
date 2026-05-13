@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { createBooking, getBookings, getBookingById, updateBookingStatus } from "../services/booking.service.js";
+import { createBooking, getBookings, getBookingById, updateBookingStatus, deleteBooking } from "../services/booking.service.js";
 import type { Booking, BookingStatus } from "../models/booking.model.js";
 import { validateBookingPayload } from "../validators/booking.validator.js";
 
@@ -60,11 +60,26 @@ const updateBookingStatusController = (req: Request, res: Response) => {
   return res.status(200).json({ data });
 }
 
+const deleteBookingController = (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (typeof id !== "string") {
+    return res.status(400).json({ error: "Booking id is required" });
+  }
+
+  const data = deleteBooking(id);
+
+  if (!data) {
+    return res.status(404).json({ error: "Booking not found" });
+  }
+
+  return res.status(200).json({ data });
+};
 
 export {
   createBookingController,
   getBookingsController,
   getBookingByIdController,
   updateBookingStatusController,
+  deleteBookingController,
 };
-

@@ -35,18 +35,32 @@ const getBookingById = (id: string): Booking | undefined => {
   return bookings.find((booking) => booking.id === id);
 };
 
-const updateBookingStatus = (id: string,status: BookingStatus ): Booking | undefined => {
+const updateBookingStatus = (id: string, status: BookingStatus): Booking | undefined => {
   const booking = getBookingById(id);
-  if(!booking) {
+  if (!booking) {
     return undefined;
   }
   booking.status = status;
   return booking;
-}
+};
+
+const deleteBooking = (id: string): Booking | undefined => {
+  const index = bookings.findIndex((booking) => booking.id === id);
+
+  if (index === -1) {
+    return undefined;
+  }
+
+  const deletedBooking = bookings[index];
+  bookings.splice(index, 1);
+
+  return deletedBooking;
+};
 
 export {
   createBooking,
   getBookings,
   getBookingById,
   updateBookingStatus,
+  deleteBooking,
 };

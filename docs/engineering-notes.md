@@ -414,6 +414,20 @@ How this project uses it:
 
 PandoraTurnos supports `pending`, `confirmed`, `cancelled`, and `no_show` as booking statuses.
 
+### DELETE Request
+
+Definition:
+
+A DELETE request removes an existing resource.
+
+Why it matters:
+
+DELETE endpoints are part of standard REST API design and help API consumers remove records in a predictable way.
+
+How this project uses it:
+
+PandoraTurnos uses `DELETE /bookings/:id` to remove a booking from the in-memory collection.
+
 ## Technical Vocabulary
 
 | Term | Meaning | Project Example |
@@ -450,6 +464,7 @@ PandoraTurnos supports `pending`, `confirmed`, `cancelled`, and `no_show` as boo
 | 404 Not Found | Resource does not exist | `GET /bookings/999` |
 | PATCH request | Updates part of a resource | `PATCH /bookings/1/status` |
 | Booking status | Operational state of a booking | `confirmed`, `cancelled`, `no_show` |
+| DELETE request | Removes a resource | `DELETE /bookings/1` |
 
 ## Lessons Learned
 
@@ -578,3 +593,17 @@ PandoraTurnos uses `BookingStatus` and `PATCH /bookings/:id/status` to update bo
 How I would explain it in an interview:
 
 I modeled booking status as a TypeScript union so only valid workflow states are allowed. This makes the API clearer and prepares the system for automation, reminders, cancellations, and no-show tracking.
+
+### Lesson 10: Delete Depends on the Storage Layer
+
+What I learned:
+
+Deleting data from an in-memory array is different from deleting data from a database.
+
+Where I used it:
+
+PandoraTurnos uses `findIndex` and `splice` to remove a booking from an in-memory array.
+
+How I would explain it in an interview:
+
+In this early version, I delete bookings from an in-memory array using `findIndex` and `splice`. In a production version with a database, the same API behavior would be implemented with a database delete operation.
