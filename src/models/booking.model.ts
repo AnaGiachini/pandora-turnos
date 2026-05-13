@@ -4,9 +4,10 @@ export type Booking = {
   customerName: string;
   serviceName: string;
   startsAt: string;
-  status: "pending" | "confirmed" | "cancelled" | "no_show";
+  status: BookingStatus;
   createdAt: string;
 };
 
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "no_show";
 
 

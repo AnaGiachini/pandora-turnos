@@ -1,4 +1,5 @@
-import type { Booking } from "../models/booking.model.js";
+import type { Booking, BookingStatus } from "../models/booking.model.js";
+
 
 const bookings: Booking[] = [
   {
@@ -34,8 +35,18 @@ const getBookingById = (id: string): Booking | undefined => {
   return bookings.find((booking) => booking.id === id);
 };
 
+const updateBookingStatus = (id: string,status: BookingStatus ): Booking | undefined => {
+  const booking = getBookingById(id);
+  if(!booking) {
+    return undefined;
+  }
+  booking.status = status;
+  return booking;
+}
+
 export {
   createBooking,
   getBookings,
   getBookingById,
+  updateBookingStatus,
 };

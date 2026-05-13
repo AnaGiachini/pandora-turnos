@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-import { createBooking, getBookings, getBookingById } from "../services/booking.service.js";
-import type { Booking } from "../models/booking.model.js";
+import { createBooking, getBookings, getBookingById, updateBookingStatus } from "../services/booking.service.js";
+import type { Booking, BookingStatus } from "../models/booking.model.js";
 import { validateBookingPayload } from "../validators/booking.validator.js";
+
 
 const createBookingController = (req: Request, res: Response) => {
   const validation = validateBookingPayload(req.body);
@@ -37,9 +38,33 @@ const getBookingByIdController = (req: Request, res: Response) => {
   return res.status(200).json({ data });
 };
 
+const updateBookingStatusController = (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  if (typeof id !== "string") {
+    return res.status(400).json({ error: "Booking id is required" });
+  }
+  if (typeof status !== "string") {
+    return res.status(400).json({ error: "Booking status is required" });
+  }
+  if (status != "pending" && status != "confirmed" && status != "cancelled" && status != "no_show") {
+    return res.status(400).json({ error: "Booking status must be 'pending', 'confirmed', 'cancelled' or 'no_show'" });
+  }
+
+  const data = updateBookingStatus(id, status as BookingStatus);
+  
+  if (!data) {
+    return res.status(404).json({ error: "Booking not found" });
+  }
+  
+  return res.status(200).json({ data });
+}
+
 
 export {
   createBookingController,
   getBookingsController,
   getBookingByIdController,
+  updateBookingStatusController,
 };
+

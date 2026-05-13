@@ -386,6 +386,34 @@ How this project uses it:
 
 PandoraTurnos returns `404` when a booking ID does not match any booking in memory.
 
+### PATCH Request
+
+Definition:
+
+A PATCH request updates part of an existing resource.
+
+Why it matters:
+
+PATCH is useful when the API should change one field without replacing the whole resource.
+
+How this project uses it:
+
+PandoraTurnos uses `PATCH /bookings/:id/status` to update only the booking status.
+
+### Booking Status
+
+Definition:
+
+A booking status represents the current operational state of a booking.
+
+Why it matters:
+
+Statuses make the booking workflow clear for the business and for automation tools.
+
+How this project uses it:
+
+PandoraTurnos supports `pending`, `confirmed`, `cancelled`, and `no_show` as booking statuses.
+
 ## Technical Vocabulary
 
 | Term | Meaning | Project Example |
@@ -420,6 +448,8 @@ PandoraTurnos returns `404` when a booking ID does not match any booking in memo
 | Runtime validation | Checks external data while the app runs | `isValidBookingPayload(req.body)` |
 | undefined | A value that was not found or assigned | `find()` returns `undefined` |
 | 404 Not Found | Resource does not exist | `GET /bookings/999` |
+| PATCH request | Updates part of a resource | `PATCH /bookings/1/status` |
+| Booking status | Operational state of a booking | `confirmed`, `cancelled`, `no_show` |
 
 ## Lessons Learned
 
@@ -534,3 +564,17 @@ Where I used it:
 How I would explain it in an interview:
 
 I keep business lookup logic in the service and HTTP response decisions in the controller. This makes the API easier to test and keeps responsibilities separated.
+
+### Lesson 9: Model Workflow State Explicitly
+
+What I learned:
+
+Booking status should be modeled explicitly because it represents the operational workflow of a reservation.
+
+Where I used it:
+
+PandoraTurnos uses `BookingStatus` and `PATCH /bookings/:id/status` to update booking state.
+
+How I would explain it in an interview:
+
+I modeled booking status as a TypeScript union so only valid workflow states are allowed. This makes the API clearer and prepares the system for automation, reminders, cancellations, and no-show tracking.
