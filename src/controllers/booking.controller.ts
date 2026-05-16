@@ -4,7 +4,7 @@ import type { Booking, BookingStatus } from "../models/booking.model.js";
 import { validateBookingPayload } from "../validators/booking.validator.js";
 
 
-const createBookingController = (req: Request, res: Response) => {
+export const createBookingController = (req: Request, res: Response) => {
   const validation = validateBookingPayload(req.body);
   if (!validation.isValid) {
     return res.status(400).json({
@@ -17,12 +17,12 @@ const createBookingController = (req: Request, res: Response) => {
   return res.status(201).json({ data });
 };
 
-const getBookingsController = (_req: Request, res: Response) => {
+export const getBookingsController = (_req: Request, res: Response) => {
   const data = getBookings();
   return res.status(200).json({ data });
 };
 
-const getBookingByIdController = (req: Request, res: Response) => {
+export const getBookingByIdController = (req: Request, res: Response) => {
   const { id } = req.params;
 
   if (typeof id !== "string") {
@@ -38,7 +38,7 @@ const getBookingByIdController = (req: Request, res: Response) => {
   return res.status(200).json({ data });
 };
 
-const updateBookingStatusController = (req: Request, res: Response) => {
+export const updateBookingStatusController = (req: Request, res: Response) => {
   const { id } = req.params;
   const { status } = req.body;
   if (typeof id !== "string") {
@@ -60,7 +60,7 @@ const updateBookingStatusController = (req: Request, res: Response) => {
   return res.status(200).json({ data });
 }
 
-const deleteBookingController = (req: Request, res: Response) => {
+export const deleteBookingController = (req: Request, res: Response) => {
   const { id } = req.params;
 
   if (typeof id !== "string") {
@@ -76,10 +76,3 @@ const deleteBookingController = (req: Request, res: Response) => {
   return res.status(200).json({ data });
 };
 
-export {
-  createBookingController,
-  getBookingsController,
-  getBookingByIdController,
-  updateBookingStatusController,
-  deleteBookingController,
-};

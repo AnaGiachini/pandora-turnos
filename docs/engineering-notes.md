@@ -607,3 +607,45 @@ PandoraTurnos uses `findIndex` and `splice` to remove a booking from an in-memor
 How I would explain it in an interview:
 
 In this early version, I delete bookings from an in-memory array using `findIndex` and `splice`. In a production version with a database, the same API behavior would be implemented with a database delete operation.
+
+### Lesson 11: Use an API Prefix for Product Endpoints
+
+What I learned:
+
+An API prefix groups product endpoints under a common path, usually `/api`.
+
+Where I used it:
+
+PandoraTurnos mounts the main router with `app.use("/api", indexRouter)`, so booking and availability endpoints live under `/api`.
+
+How I would explain it in an interview:
+
+I use `/api` as a prefix to separate product API routes from infrastructure routes such as `/health`. This keeps the API structure clear and makes it easier to version or expose endpoints later.
+
+### Lesson 12: Query Parameters Are Useful for Searches and Checks
+
+What I learned:
+
+A query parameter sends extra information in the URL without creating a new resource.
+
+Where I used it:
+
+PandoraTurnos uses `GET /api/availability?startsAt=...` to check whether a requested time slot is available.
+
+How I would explain it in an interview:
+
+I used a query parameter for availability because the client is asking a question about a specific time, not creating or updating a booking. This keeps the endpoint simple and aligned with REST behavior.
+
+### Lesson 13: Availability Is Conflict Detection
+
+What I learned:
+
+Checking availability means looking for an existing booking that conflicts with the requested date and time.
+
+Where I used it:
+
+PandoraTurnos checks whether any non-cancelled booking already has the same `startsAt` value.
+
+How I would explain it in an interview:
+
+I implemented availability by detecting conflicts against existing bookings. Cancelled bookings do not block the slot, while pending or confirmed bookings make the slot unavailable. This is the first step toward a real WhatsApp booking flow.

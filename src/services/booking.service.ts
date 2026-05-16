@@ -22,20 +22,20 @@ const bookings: Booking[] = [
   },
 ];
 
-const createBooking = (booking: Booking): Booking => {
+export const createBooking = (booking: Booking): Booking => {
   bookings.push(booking);
   return booking;
 };
 
-const getBookings = (): Booking[] => {
+export const getBookings = (): Booking[] => {
   return bookings;
 };
 
-const getBookingById = (id: string): Booking | undefined => {
+export const getBookingById = (id: string): Booking | undefined => {
   return bookings.find((booking) => booking.id === id);
 };
 
-const updateBookingStatus = (id: string, status: BookingStatus): Booking | undefined => {
+export const updateBookingStatus = (id: string, status: BookingStatus): Booking | undefined => {
   const booking = getBookingById(id);
   if (!booking) {
     return undefined;
@@ -44,7 +44,7 @@ const updateBookingStatus = (id: string, status: BookingStatus): Booking | undef
   return booking;
 };
 
-const deleteBooking = (id: string): Booking | undefined => {
+export const deleteBooking = (id: string): Booking | undefined => {
   const index = bookings.findIndex((booking) => booking.id === id);
 
   if (index === -1) {
@@ -57,10 +57,3 @@ const deleteBooking = (id: string): Booking | undefined => {
   return deletedBooking;
 };
 
-export {
-  createBooking,
-  getBookings,
-  getBookingById,
-  updateBookingStatus,
-  deleteBooking,
-};
