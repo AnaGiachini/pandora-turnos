@@ -26,6 +26,50 @@ This project is designed to practice and demonstrate:
 - Error handling and logging
 - Technical documentation
 
+## How to Run the Project
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the project in development mode:
+
+```bash
+npm run dev
+```
+
+Build the TypeScript project:
+
+```bash
+npm run build
+```
+
+Run the compiled project:
+
+```bash
+npm start
+```
+
+The API runs by default on:
+
+```txt
+http://localhost:3000
+```
+
+## Available Endpoints
+
+Current endpoints implemented in this first version:
+
+- `GET /health` - Checks if the API is running.
+- `GET /api/bookings` - Returns the current mock bookings.
+- `POST /api/bookings` - Creates a booking using the request body.
+- `GET /api/bookings/:id` - Finds a booking by id.
+- `PATCH /api/bookings/:id/status` - Updates only the booking status.
+- `DELETE /api/bookings/:id` - Removes a booking from the mock data.
+- `GET /api/availability?startsAt=...` - Checks if a requested time slot is already booked.
+
 ## Core Modules
 
 - Bookings
