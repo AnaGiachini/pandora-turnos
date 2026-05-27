@@ -10,4 +10,5 @@ export type Booking = {
 
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "no_show";
 
-
+// Runtime array used for validation — mirrors BookingStatus values
+export const BOOKING_STATUSES: BookingStatus[] = ["pending", "confirmed", "cancelled", "no_show"];

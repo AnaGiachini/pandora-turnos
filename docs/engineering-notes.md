@@ -465,6 +465,20 @@ PandoraTurnos uses `DELETE /bookings/:id` to remove a booking from the in-memory
 | PATCH request | Updates part of a resource | `PATCH /bookings/1/status` |
 | Booking status | Operational state of a booking | `confirmed`, `cancelled`, `no_show` |
 | DELETE request | Removes a resource | `DELETE /bookings/1` |
+| Type guard | Narrows a TypeScript type when a condition is true | `value is string` in `isNonEmptyString` |
+| Type cast | Tells TypeScript to treat a value as a specific type | `payload as Record<string, unknown>` |
+| trim() | Removes whitespace from the start and end of a string | `id.trim() === ""` rejects blank IDs |
+| Defensive validation | Checks existence, type, and content before using a value | `!id \|\| typeof id !== "string" \|\| id.trim() === ""` |
+| findIndex | Returns the position of an element in an array or -1 | Used to locate a booking before deleting |
+| splice | Removes elements from an array at a given position | `splice(index, 1)` removes one booking |
+| PUT request | Replaces an entire resource | Not used in this project |
+| PATCH request | Updates part of a resource | `PATCH /api/bookings/:id/status` |
+| 400 Bad Request | The request is malformed or missing data | Missing or invalid booking ID |
+| 404 Not Found | The request is valid but the resource does not exist | Booking ID not found in memory |
+| Route param | Identifies a specific resource in the URL path | `req.params.id` in `GET /bookings/:id` |
+| Query param | Passes a filter or question in the URL after `?` | `req.query.startsAt` in `GET /availability?startsAt=...` |
+| Request body | Carries structured data inside the HTTP message | `req.body` in `POST /bookings` |
+| Index router | A central file that mounts all module routers | `routes/index.ts` exports `indexRouter` |
 
 ## Lessons Learned
 
@@ -635,6 +649,132 @@ PandoraTurnos uses `GET /api/availability?startsAt=...` to check whether a reque
 How I would explain it in an interview:
 
 I used a query parameter for availability because the client is asking a question about a specific time, not creating or updating a booking. This keeps the endpoint simple and aligned with REST behavior.
+
+### Type Guard
+
+Definition:
+
+A type guard is a function that returns a boolean and also tells TypeScript what type a value is when the function returns `true`.
+
+Why it matters:
+
+Without a type guard, TypeScript keeps treating a value as `unknown` even after a condition confirms it is a string. The type guard narrows the type so TypeScript allows string operations on that value.
+
+How this project uses it:
+
+PandoraTurnos uses `isNonEmptyString` as a type guard. It returns `value is string`, which tells TypeScript that inside the `if` block, the value can be treated as a string.
+
+### Type Cast
+
+Definition:
+
+A type cast tells TypeScript to treat a value as a specific type using the `as` keyword. It does not validate the data at runtime.
+
+Why it matters:
+
+When TypeScript sees `unknown`, it cannot allow property access. Casting to `Record<string, unknown>` tells TypeScript the value is an object with string keys, which allows accessing properties like `booking.id` or `booking.status`.
+
+How this project uses it:
+
+PandoraTurnos casts the incoming payload to `Record<string, unknown>` inside `validateBookingPayload` so each field can be accessed and validated individually.
+
+### trim()
+
+Definition:
+
+`trim()` is a JavaScript string method that removes whitespace characters from the beginning and end of a string. It does not affect spaces in the middle.
+
+Why it matters:
+
+A string with only spaces like `"   "` would pass a simple empty string check without `trim()`. Using `trim()` ensures that fields containing only spaces are treated as empty and rejected.
+
+How this project uses it:
+
+PandoraTurnos uses `id.trim() === ""` in controller ID validation to reject IDs that contain only whitespace.
+
+### Defensive ID Validation
+
+Definition:
+
+Defensive ID validation checks that an incoming ID exists, is a plain string, and is not empty or whitespace before using it.
+
+Why it matters:
+
+Express types `req.params` values as `string | string[]`. A simple `typeof id !== "string"` check is not enough because it does not handle empty strings or whitespace-only values.
+
+How this project uses it:
+
+PandoraTurnos uses `!id || typeof id !== "string" || id.trim() === ""` in booking controllers to reject missing, non-string, or blank IDs before calling the service.
+
+### findIndex and splice
+
+Definition:
+
+`findIndex` returns the position of an element in an array, or `-1` if not found. `splice(index, 1)` removes one element at that position from the array.
+
+Why it matters:
+
+To remove a specific element from an array, the position is needed. The element must be saved before `splice` is called because it no longer exists in the array after removal.
+
+How this project uses it:
+
+PandoraTurnos uses `findIndex` and `splice` in `deleteBooking` to locate and remove a booking from the in-memory array, returning the deleted booking to the controller.
+
+### PUT vs PATCH
+
+Definition:
+
+PUT replaces the entire resource with new data. PATCH updates only a specific part of an existing resource.
+
+Why it matters:
+
+Using PUT when only one field needs to change would require sending all resource fields in the request. PATCH is more efficient and semantically correct for partial updates.
+
+How this project uses it:
+
+PandoraTurnos uses `PATCH /api/bookings/:id/status` because only the booking status changes. Sending the full booking object would be unnecessary and error-prone.
+
+### 400 vs 404
+
+Definition:
+
+`400 Bad Request` means the request itself is malformed or missing required information. `404 Not Found` means the request was valid but the requested resource does not exist.
+
+Why it matters:
+
+Returning the correct status code helps API consumers, automation tools, and support teams understand what went wrong and how to fix it.
+
+How this project uses it:
+
+PandoraTurnos returns `400` when an ID is missing or invalid, and `404` when a valid ID does not match any existing booking.
+
+### Route Parameters, Query Parameters, and Request Body
+
+Definition:
+
+Route parameters (`req.params`) identify a specific resource in the URL path. Query parameters (`req.query`) pass optional filters or questions after a `?` in the URL. The request body (`req.body`) carries structured data inside the HTTP message.
+
+Why it matters:
+
+Each mechanism serves a different purpose. Using the wrong one makes the API harder to understand and breaks REST conventions.
+
+How this project uses it:
+
+PandoraTurnos uses `req.params.id` to identify a booking, `req.query.startsAt` to ask whether a time slot is available, and `req.body` to receive booking data when creating or updating a resource.
+
+### Index Router
+
+Definition:
+
+An index router is a central file that imports and mounts all module routers, then exports a single router for the main app to use.
+
+Why it matters:
+
+As the project grows, registering every router directly in `app.ts` makes the file hard to read. The index router centralizes that responsibility so `app.ts` stays clean.
+
+How this project uses it:
+
+PandoraTurnos uses `routes/index.ts` to mount `bookingRouter` under `/bookings` and `availabilityRouter` under `/availability`, then exports `indexRouter` for `app.ts`.
 
 ### Lesson 13: Availability Is Conflict Detection
 

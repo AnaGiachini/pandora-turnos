@@ -1,12 +1,30 @@
+import { BOOKING_STATUSES, type BookingStatus } from "../models/booking.model.js";
+
 type BookingValidationResult = {
   isValid: boolean;
   errors: string[];
 };
 
+/**
+ * Type guard that checks whether a value is a non-empty string.
+ * @param value - The value to check
+ * @returns true if value is a non-empty, non-whitespace string
+ */
 const isNonEmptyString = (value: unknown): value is string => {
-  return typeof value === "string" && value.trim().length > 0;
+  if (typeof value !== "string") {
+    return false;
+  }
+  if (value.trim().length === 0) {
+    return false;
+  }
+  return true;
 };
 
+/**
+ * Validates the incoming booking payload before passing it to the service layer.
+ * @param payload - The raw request body received from the client
+ * @returns Validation result with isValid flag and list of errors if any
+ */
 const validateBookingPayload = (payload: unknown): BookingValidationResult => {
   if (payload === null || typeof payload !== "object") {
     return { isValid: false, errors: ["Payload must be an object"] };
@@ -19,7 +37,10 @@ const validateBookingPayload = (payload: unknown): BookingValidationResult => {
     errors.push("ID is required and must be a non-empty string");
   }
 
-  if (!booking.businessType || (booking.businessType !== "sports_court" && booking.businessType !== "dental_clinic")) {
+  if (
+    !booking.businessType ||
+    (booking.businessType !== "sports_court" && booking.businessType !== "dental_clinic")
+  ) {
     errors.push("Business type is required and must be 'sports_court' or 'dental_clinic'");
   }
 
@@ -35,7 +56,12 @@ const validateBookingPayload = (payload: unknown): BookingValidationResult => {
     errors.push("Starts at is required and must be a non-empty string");
   }
 
-  if (!booking.status || (booking.status !== "pending" && booking.status !== "confirmed" && booking.status !== "cancelled" && booking.status !== "no_show")) {
+  // Status must be a string and one of the allowed values
+  if (
+    !booking.status ||
+    typeof booking.status !== "string" ||
+    !BOOKING_STATUSES.includes(booking.status as BookingStatus)
+  ) {
     errors.push("Status is required and must be 'pending', 'confirmed', 'cancelled' or 'no_show'");
   }
 
@@ -43,7 +69,13 @@ const validateBookingPayload = (payload: unknown): BookingValidationResult => {
     errors.push("Created at is required and must be a non-empty string");
   }
 
-  return { isValid: errors.length === 0, errors };
+  const hasErrors = errors.length > 0;
+  const isValid = !hasErrors;
+
+  return {
+    isValid: isValid,
+    errors: errors,
+  };
 };
 
 export { validateBookingPayload };

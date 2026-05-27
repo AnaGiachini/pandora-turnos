@@ -1,6 +1,6 @@
 import type { Booking, BookingStatus } from "../models/booking.model.js";
 
-
+// TODO: replace with database persistence
 const bookings: Booking[] = [
   {
     id: "1",
@@ -22,19 +22,35 @@ const bookings: Booking[] = [
   },
 ];
 
+/**
+ * @param booking - The booking to create
+ * @returns The created booking
+ */
 export const createBooking = (booking: Booking): Booking => {
   bookings.push(booking);
   return booking;
 };
 
+/**
+ * @returns All bookings in the collection
+ */
 export const getBookings = (): Booking[] => {
   return bookings;
 };
 
+/**
+ * @param id - The booking ID to search for
+ * @returns The booking if found, undefined otherwise
+ */
 export const getBookingById = (id: string): Booking | undefined => {
   return bookings.find((booking) => booking.id === id);
 };
 
+/**
+ * @param id - The booking ID to update
+ * @param status - The new status to set
+ * @returns The updated booking if found, undefined otherwise
+ */
 export const updateBookingStatus = (id: string, status: BookingStatus): Booking | undefined => {
   const booking = getBookingById(id);
   if (!booking) {
@@ -44,6 +60,10 @@ export const updateBookingStatus = (id: string, status: BookingStatus): Booking 
   return booking;
 };
 
+/**
+ * @param id - The booking ID to delete
+ * @returns The deleted booking if found, undefined otherwise
+ */
 export const deleteBooking = (id: string): Booking | undefined => {
   const index = bookings.findIndex((booking) => booking.id === id);
 
@@ -51,9 +71,9 @@ export const deleteBooking = (id: string): Booking | undefined => {
     return undefined;
   }
 
+  // Save before splice — the element no longer exists in the array after removal
   const deletedBooking = bookings[index];
   bookings.splice(index, 1);
 
   return deletedBooking;
 };
-
