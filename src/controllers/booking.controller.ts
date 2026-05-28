@@ -6,9 +6,9 @@ import {
   updateBookingStatus,
   deleteBooking,
 } from "../services/booking.service.js";
-import type { Booking, BookingStatus } from "../models/booking.model.js";
+import type { Booking } from "../models/booking.model.js";
 import { validateBookingPayload } from "../validators/booking.validator.js";
-import { BOOKING_STATUSES } from "../models/booking.model.js";
+import { isBookingStatus } from "../models/booking.model.js";
 
 export const createBookingController = (req: Request, res: Response) => {
   const validation = validateBookingPayload(req.body);
@@ -57,13 +57,13 @@ export const updateBookingStatusController = (req: Request, res: Response) => {
     return res.status(400).json({ error: "Booking status is required" });
   }
 
-  if (!BOOKING_STATUSES.includes(status as BookingStatus)) {
+  if (!isBookingStatus(status)) {
     return res
       .status(400)
       .json({ error: "Booking status must be 'pending', 'confirmed', 'cancelled' or 'no_show'" });
   }
 
-  const data = updateBookingStatus(id, status as BookingStatus);
+  const data = updateBookingStatus(id, status);
 
   if (!data) {
     return res.status(404).json({ error: "Booking not found" });

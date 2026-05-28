@@ -1,4 +1,4 @@
-import { BOOKING_STATUSES, type BookingStatus } from "../models/booking.model.js";
+import { isBookingStatus } from "../models/booking.model.js";
 
 type BookingValidationResult = {
   isValid: boolean;
@@ -57,11 +57,7 @@ const validateBookingPayload = (payload: unknown): BookingValidationResult => {
   }
 
   // Status must be a string and one of the allowed values
-  if (
-    !booking.status ||
-    typeof booking.status !== "string" ||
-    !BOOKING_STATUSES.includes(booking.status as BookingStatus)
-  ) {
+  if (!isBookingStatus(booking.status)) {
     errors.push("Status is required and must be 'pending', 'confirmed', 'cancelled' or 'no_show'");
   }
 

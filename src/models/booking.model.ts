@@ -1,3 +1,7 @@
+export const BOOKING_STATUSES = ["pending", "confirmed", "cancelled", "no_show"] as const;
+
+export type BookingStatus = (typeof BOOKING_STATUSES)[number];
+
 export type Booking = {
   id: string;
   businessType: "sports_court" | "dental_clinic";
@@ -8,7 +12,11 @@ export type Booking = {
   createdAt: string;
 };
 
-export type BookingStatus = "pending" | "confirmed" | "cancelled" | "no_show";
+export const isBookingStatus = (value: unknown): value is BookingStatus => {
+  if (typeof value !== "string") {
+    return false;
+  }
 
-// Runtime array used for validation — mirrors BookingStatus values
-export const BOOKING_STATUSES: BookingStatus[] = ["pending", "confirmed", "cancelled", "no_show"];
+  return BOOKING_STATUSES.includes(value as BookingStatus);
+};
+

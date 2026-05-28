@@ -479,6 +479,8 @@ PandoraTurnos uses `DELETE /bookings/:id` to remove a booking from the in-memory
 | Query param | Passes a filter or question in the URL after `?` | `req.query.startsAt` in `GET /availability?startsAt=...` |
 | Request body | Carries structured data inside the HTTP message | `req.body` in `POST /bookings` |
 | Index router | A central file that mounts all module routers | `routes/index.ts` exports `indexRouter` |
+| Type predicate | TypeScript syntax `value is Type` that narrows types after validation | `value is BookingStatus` in `isBookingStatus` |
+| as const | TypeScript modifier that makes array literals readonly and literal types | `BOOKING_STATUSES = [...] as const` |
 
 ## Lessons Learned
 
@@ -662,7 +664,21 @@ Without a type guard, TypeScript keeps treating a value as `unknown` even after 
 
 How this project uses it:
 
-PandoraTurnos uses `isNonEmptyString` as a type guard. It returns `value is string`, which tells TypeScript that inside the `if` block, the value can be treated as a string.
+PandoraTurnos uses `isNonEmptyString` and `isBookingStatus` as type guards. They return `value is string` and `value is BookingStatus`, which tells TypeScript that inside the `if` block, the value can be treated as that specific type.
+
+### value is Type Syntax
+
+Definition:
+
+The `value is Type` syntax in a function return type is a TypeScript type predicate. It declares that when this function returns `true`, the parameter `value` should be treated as type `Type` in subsequent code.
+
+Why it matters:
+
+Without this syntax, TypeScript would not narrow the type after the check. The type predicate creates a contract between runtime validation (the actual check) and compile-time type safety (TypeScript trusting the result).
+
+How this project uses it:
+
+`isBookingStatus(value: unknown): value is BookingStatus` tells TypeScript: if this returns true, value is a valid BookingStatus. This eliminates the need for `as BookingStatus` casts throughout the codebase.
 
 ### Type Cast
 
@@ -789,3 +805,17 @@ PandoraTurnos checks whether any non-cancelled booking already has the same `sta
 How I would explain it in an interview:
 
 I implemented availability by detecting conflicts against existing bookings. Cancelled bookings do not block the slot, while pending or confirmed bookings make the slot unavailable. This is the first step toward a real WhatsApp booking flow.
+
+### Lesson 14: Validate External Data with Type Guards, Not Casts
+
+What I learned:
+
+Using type casts (`as BookingStatus`) tells TypeScript to trust the type without checking. A type guard function validates at runtime and narrows the type automatically.
+
+Where I used it:
+
+Created `isBookingStatus` in `booking.model.ts` to validate whether an unknown value is a valid booking status before using it in business logic.
+
+How I would explain it in an interview:
+
+I replaced type casts with a type guard function that validates the value is a string and exists in the allowed statuses array. This ensures runtime safety and eliminates implicit trust in external input. Type guards are essential when integrating with third-party systems, webhooks, or APIs where you cannot control the data format.
