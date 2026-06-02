@@ -819,3 +819,39 @@ Created `isBookingStatus` in `booking.model.ts` to validate whether an unknown v
 How I would explain it in an interview:
 
 I replaced type casts with a type guard function that validates the value is a string and exists in the allowed statuses array. This ensures runtime safety and eliminates implicit trust in external input. Type guards are essential when integrating with third-party systems, webhooks, or APIs where you cannot control the data format.
+
+### Backend Request Flow
+
+Definition:
+
+Backend request flow describes how an HTTP request moves through the application layers before a response is returned to the client.
+
+Why it matters:
+
+Understanding request flow helps explain backend architecture, debug API issues, and identify where responsibilities belong. It also helps separate HTTP concerns from business logic.
+
+How this project uses it:
+
+In PandoraTurnos, a request enters through `app.ts`, passes through middleware such as `requestLogger`, reaches the API router, then goes to the correct module router. The router calls a controller. The controller validates input, calls the service layer, and sends the final JSON response.
+
+Key flow:
+
+```txt
+Client -> app.ts -> middleware -> router -> controller -> service -> controller -> response
+```
+
+Main responsibility split:
+
+```txt
+Controller = HTTP handling, validation, status codes, JSON responses.
+Service = business logic and data operations.
+```
+
+How I would explain it in an interview:
+
+In this project, requests enter through app.ts, pass through middleware like the request logger, then reach the API router. The router delegates the request to a controller. The controller handles HTTP concerns such as validation, status codes, and JSON responses. Business logic lives in services, which return data back to the controller.
+
+Spanish explanation:
+
+La request entra por app.ts, pasa por middlewares, llega al router, el router llama al controller, el controller valida y llama al service, el service ejecuta la lógica, y el controller devuelve la respuesta HTTP.
+

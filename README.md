@@ -8,10 +8,12 @@ The project focuses on real-world workflows such as appointment scheduling, rese
 
 PandoraIncidentLab is included as an internal technical layer inside PandoraTurnos. This layer is used to demonstrate logs, webhook failures, failed automations, incident registration, monitoring, and troubleshooting documentation.
 
+
 ## Real-World Context
 
 - A dental clinic needs to reduce patient no-shows and improve communication before scheduled appointments.
 - A sports court business needs to manage reservations, avoid last-minute no-shows, and improve the payment confirmation process.
+
 
 ## Technical Goals
 
@@ -25,6 +27,7 @@ This project is designed to practice and demonstrate:
 - Webhooks and automation with n8n
 - Error handling and logging
 - Technical documentation
+
 
 ## How to Run the Project
 
@@ -58,26 +61,17 @@ The API runs by default on:
 http://localhost:3000
 ```
 
+
 ## Available Endpoints
 
-Current endpoints implemented in this first version:
+- GET - `/health` - API health check 
+- GET - `/api/bookings` - List all bookings 
+- POST - `/api/bookings` - Create new booking 
+- GET - `/api/bookings/:id` - Get booking by ID 
+- PATCH - `/api/bookings/:id/status` - Update booking status 
+- DELETE - `/api/bookings/:id` - Delete booking 
+- GET - `/api/availability?startsAt=...` - Check time slot availability 
 
-- `GET /health` - Checks if the API is running.
-- `GET /api/bookings` - Returns the current mock bookings.
-- `POST /api/bookings` - Creates a booking using the request body.
-- `GET /api/bookings/:id` - Finds a booking by id.
-- `PATCH /api/bookings/:id/status` - Updates only the booking status.
-- `DELETE /api/bookings/:id` - Removes a booking from the mock data.
-- `GET /api/availability?startsAt=...` - Checks if a requested time slot is already booked.
-
-## Core Modules
-
-- Bookings
-- Incidents
-- Notifications
-- Webhooks
-- Audit Logs
-- IncidentLab
 
 ## Learning Goals
 
