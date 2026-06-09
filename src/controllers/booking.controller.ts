@@ -9,6 +9,7 @@ import {
 import type { Booking } from "../models/booking.model.js";
 import { validateBookingPayload } from "../validators/booking.validator.js";
 import { isBookingStatus } from "../models/booking.model.js";
+import { emitBookingCreated } from "../services/event.service.js";
 
 export const createBookingController = (req: Request, res: Response) => {
   const validation = validateBookingPayload(req.body);
@@ -20,6 +21,7 @@ export const createBookingController = (req: Request, res: Response) => {
   }
   const booking = req.body as Booking;
   const data = createBooking(booking);
+  emitBookingCreated(data);
   return res.status(201).json({ data });
 };
 

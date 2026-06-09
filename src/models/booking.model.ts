@@ -19,4 +19,3 @@ export const isBookingStatus = (value: unknown): value is BookingStatus => {
 
   return BOOKING_STATUSES.includes(value as BookingStatus);
 };
-
